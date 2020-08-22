@@ -1,0 +1,7 @@
+name: MinecraftMovies
+version: 1.0
+author: Adiber
+main: at.adiber.movies.Movies
+commands:
+  cc:
+    description: Creates a new Canvas
