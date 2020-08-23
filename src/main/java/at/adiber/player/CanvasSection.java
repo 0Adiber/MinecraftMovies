@@ -9,8 +9,12 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CanvasSection {
+
+    public static final int DEFAULT_STARTING_ID = Integer.MAX_VALUE / 4;
+    private static final AtomicInteger ID_COUNTER = new AtomicInteger(DEFAULT_STARTING_ID);
 
     private final byte[] pixels;
     private final BlockFace direction;
@@ -25,6 +29,8 @@ public class CanvasSection {
         this.rotation = rotation;
         this.location = location;
         this.pixels = MapHelper.getPixels(image);
+        this.frameId = ID_COUNTER.getAndIncrement();
+        this.mapId = MapHelper.nextMapId(location.getWorld());
     }
 
     /**

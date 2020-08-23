@@ -69,7 +69,7 @@ public class Canvas {
             section.shown.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(players::add);
             players.forEach(player -> MapHelper.destroyMap(player, section.getFrameId()));
         }
-        this.sections = null;
+        this.sections.clear();
         return players;
     }
 
