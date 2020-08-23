@@ -14,17 +14,15 @@ import java.util.List;
 public class Canvas {
 
     private List<CanvasSection> sections;
-    private BlockFace direction;
-    private Location location;
-    private UUID creator;
-    private static final int PIXELS_PER_FRAME = 128;
+    private Set<Player> watchers;
 
-    public Canvas(Location location, BlockFace direction, BufferedImage image, UUID creator) {
+    public Canvas() {
         sections = new ArrayList<>();
-        this.creator = creator;
-        this.location = location;
-        this.direction = direction;
-        this.update(image);
+        watchers = new HashSet<>();
+    }
+
+    public void addWatcher(Player player) {
+        watchers.add(player);
     }
 
     /**
@@ -35,6 +33,13 @@ public class Canvas {
     public void refresh(Player player, Location location) {
         for(CanvasSection section : this.sections) {
 
+            if(watchers.contains(player)) {
+                section.show(player);
+            } else {
+                section.hide(player);
+            }
+
+            /*
             boolean sameWorld = location != null && section.getLocation().getWorld().equals(location.getWorld());
             if(sameWorld) {
                 double distance = section.getLocation().distanceSquared(location);
@@ -45,7 +50,7 @@ public class Canvas {
                 }
             } else {
                 section.hide(player);
-            }
+            }*/
 
         }
     }
@@ -69,100 +74,20 @@ public class Canvas {
             section.shown.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(players::add);
             players.forEach(player -> MapHelper.destroyMap(player, section.getFrameId()));
         }
-        this.sections.clear();
         return players;
     }
 
     /**
      * Change the image and show it
-     * @param image
      */
-    public void update(BufferedImage image) {
-        if(image == null) return;
+    public void update(List<CanvasSection> sections) {
         Set<Player> players = this.destroy();
-        BlockFace face;
-        int rotation;
-        switch (this.direction) {
-            case UP:
-            case DOWN:
-                face = this.direction;
-                rotation = 0;
-                break;
-            case NORTH:
-                face = BlockFace.SOUTH;
-                rotation = 0;
-                break;
-            case SOUTH:
-                face = BlockFace.NORTH;
-                rotation = 0;
-                break;
-            case EAST:
-                face = BlockFace.WEST;
-                rotation = 0;
-                break;
-            case WEST:
-                face = BlockFace.EAST;
-                rotation = 0;
-                break;
-            default:
-                throw new IllegalStateException("Invalid direction " + this.direction);
-        }
 
-        int xSections = Math.max(image.getWidth() / PIXELS_PER_FRAME, 1);
-        int ySections = Math.max(image.getHeight() / PIXELS_PER_FRAME, 1);
-        image = resize(image, xSections, ySections);
-        for (int x = 0; x < xSections; x++) {
+        this.sections = new ArrayList<>(sections);
 
-            for (int y = 0; y < ySections; y++) {
-
-                Location loc = location.clone();
-                switch (face) {
-                    case UP:
-                        loc.add(x, 0, y);
-                        break;
-                    case DOWN:
-                        loc.add(x, 0, -y);
-                        break;
-                    case SOUTH:
-                        loc.add(-x, -y, 0);
-                        break;
-                    case NORTH:
-                        loc.add(x, -y, 0);
-                        break;
-                    case WEST:
-                        loc.add(0, -y, -x);
-                        break;
-                    case EAST:
-                        loc.add(0, -y, x);
-                        break;
-                }
-
-                CanvasSection section = new CanvasSection(this.direction,
-                        rotation, loc, image.getSubimage(x * PIXELS_PER_FRAME, y * PIXELS_PER_FRAME,
-                        PIXELS_PER_FRAME, PIXELS_PER_FRAME));
-                this.sections.add(section);
-            }
-        }
-
-        for (Player player : players) {
+        for (Player player : watchers) {
             this.refresh(player, player.getLocation());
         }
-
-    }
-
-    public static BufferedImage resize(BufferedImage image, int xSections, int ySections) {
-        if (image.getWidth() % PIXELS_PER_FRAME == 0 && image.getHeight() % PIXELS_PER_FRAME == 0) {
-            return image;
-        }
-        // Get a scaled version of the image
-        Image img = image.getScaledInstance(xSections * PIXELS_PER_FRAME,
-                ySections * PIXELS_PER_FRAME, Image.SCALE_DEFAULT);
-        image = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        // Copy the image over to the new instance
-        Graphics2D g2D = image.createGraphics();
-        g2D.drawImage(img, 0, 0, null);
-        g2D.dispose();
-        return image;
     }
 
 }

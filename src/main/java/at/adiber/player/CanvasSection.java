@@ -92,6 +92,13 @@ public class CanvasSection {
     }
 
     /**
+     * Clears the shown list. Needed to restart the video
+     */
+    public void clearShown() {
+        this.shown.clear();
+    }
+
+    /**
      * Hide this image section from the player
      * @param player The player to hide from
      */

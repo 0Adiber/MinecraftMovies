@@ -1,17 +1,21 @@
-package at.adiber.movies;
+package at.adiber.main;
 
 import at.adiber.commands.CreateCommand;
+import at.adiber.commands.StartCommand;
+import at.adiber.player.VideoPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.HashMap;
 
-public class Movies extends JavaPlugin {
+public class Main extends JavaPlugin {
 
-    public static Movies movies;
+    public static Main main;
+    public HashMap<String, VideoPlayer> videos = new HashMap<>();
 
     @Override
     public void onEnable() {
-        movies = this;
+        main = this;
         getLogger().info("Minecraft Movies loaded.. happy watching!");
         init();
         registerCommands();
@@ -33,6 +37,7 @@ public class Movies extends JavaPlugin {
 
     public void registerCommands() {
         getCommand("cc").setExecutor(new CreateCommand());
+        getCommand("start").setExecutor(new StartCommand());
     }
 
 }

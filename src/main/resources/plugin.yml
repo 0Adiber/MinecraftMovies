@@ -1,7 +1,10 @@
 name: MinecraftMovies
 version: 1.0
 author: Adiber
-main: at.adiber.movies.Movies
+main: at.adiber.main.Main
 commands:
   cc:
     description: Creates a new Canvas
+  start:
+    description: Start a video
+    usage: /start <video>
