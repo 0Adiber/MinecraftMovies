@@ -86,7 +86,7 @@ public class VideoPlayer {
     }
 
     public void clearShown() {
-        canvas.destroy();
+        canvas.destroyAll();
         for(VideoFrame frame : frames) {
             for(CanvasSection section : frame.sections) {
                 section.clearShown();

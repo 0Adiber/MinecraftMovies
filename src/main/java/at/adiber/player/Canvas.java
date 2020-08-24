@@ -26,18 +26,13 @@ public class Canvas {
     }
 
     /**
-     * Show or hide image for player if they are within 64 blocks
-     * @param player The player to show image to
-     * @param location The location of the player
+     * Show or hide a section for all watchers
      */
-    public void refresh(Player player, Location location) {
-        for(CanvasSection section : this.sections) {
+    public void refresh(CanvasSection section) {
 
-            if(watchers.contains(player)) {
-                section.show(player);
-            } else {
-                section.hide(player);
-            }
+        for(Player player : watchers) {
+            section.show(player);
+        }
 
             /*
             boolean sameWorld = location != null && section.getLocation().getWorld().equals(location.getWorld());
@@ -51,8 +46,6 @@ public class Canvas {
             } else {
                 section.hide(player);
             }*/
-
-        }
     }
 
     /**
@@ -60,34 +53,44 @@ public class Canvas {
      * @param player The player to remove
      */
     public void remove(Player player) {
+        watchers.remove(player);
         for(CanvasSection section : sections) {
             section.shown.remove(player.getUniqueId());
         }
     }
 
     /**
-     * Destroy all sections of the image and hide it from all players that it has been shown for.
+     * Destroy a sections for all watchers
      */
-    public Set<Player> destroy() {
-        Set<Player> players = new HashSet<>();
-        for(CanvasSection section : sections) {
-            section.shown.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(players::add);
-            players.forEach(player -> MapHelper.destroyMap(player, section.getFrameId()));
+    public void destroy(CanvasSection section) {
+
+        for(Player player : watchers) {
+            MapHelper.destroyMap(player, section.getFrameId());
         }
-        return players;
+
+    }
+
+    public void destroyAll() {
+
+        for(CanvasSection section : this.sections) {
+            for(Player player : watchers) {
+                MapHelper.destroyMap(player, section.getFrameId());
+            }
+        }
+
     }
 
     /**
      * Change the image and show it
      */
     public void update(List<CanvasSection> sections) {
-        Set<Player> players = this.destroy();
 
+        for(int i = 0; i<this.sections.size(); i++) {
+            this.destroy(this.sections.get(i));
+            this.refresh(sections.get(i));
+        }
         this.sections = new ArrayList<>(sections);
 
-        for (Player player : watchers) {
-            this.refresh(player, player.getLocation());
-        }
     }
 
 }
