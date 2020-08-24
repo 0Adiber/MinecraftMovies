@@ -24,6 +24,8 @@ public class VideoPlayer {
 
     int playerTask = -1;
 
+    private boolean pause;
+
     public VideoPlayer(Canvas canvas, Video video, String id) {
         //grabber = new FFmpegFrameGrabber(file);
         this.video = video;
@@ -42,7 +44,10 @@ public class VideoPlayer {
         new BukkitRunnable() {
             @Override
             public void run() {
-                playerTask = this.getTaskId();
+                if(currentFrame == 0)
+                    playerTask = this.getTaskId();
+                if(pause)
+                    return;
                 try {
                     VideoFrame frame = next();
                     canvas.update(frame.getSections());
@@ -70,6 +75,14 @@ public class VideoPlayer {
         }
 
         Main.main.players.remove(this.id);
+    }
+
+    public void pause() {
+        this.pause = true;
+    }
+
+    public void resume() {
+        this.pause = false;
     }
 
     public VideoFrame next() {

@@ -5,8 +5,11 @@ import at.adiber.main.Main;
 import at.adiber.player.VideoFrame;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,14 +42,27 @@ public class RenderManager {
         pool = Executors.newFixedThreadPool(threads);
         CompletionService<VideoFrame> service = new ExecutorCompletionService<>(pool);
 
-        List<BufferedImage> images = IOAccess.readImages(folder);
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    IOAccess.readImages(folder, service, blockFace, location);
+                } catch (IOException e) {
+                    pool.shutdown();
+                }
+            }
+        }.run();
+
+
+
+        /*List<BufferedImage> images = IOAccess.readImages(folder);
 
         int position = 0;
         for(BufferedImage img : images) {
             service.submit(new RenderWorker(img, blockFace, location, position++));
         }
 
-        pool.shutdown();
+        pool.shutdown();*/
 
         while(!pool.isTerminated()) {
             Future<VideoFrame> f = service.take();
@@ -65,6 +81,7 @@ public class RenderManager {
     }
 
     public void terminate() throws InterruptedException {
+        IOAccess.kill();
         if(pool != null){
             pool.shutdown(); //no more new tasks
             if(!pool.awaitTermination(30, TimeUnit.SECONDS)) { //wait 30 secs for current tasks to finish
