@@ -7,4 +7,7 @@ commands:
     description: Creates a new Canvas
   start:
     description: Start a video
-    usage: /start <video>
+    usage: /start <canvas> <video>
+  render:
+    description: Render a video for a canvas
+    usage: /render <canvas> <type> <name>

@@ -1,6 +1,7 @@
 package at.adiber.player;
 
 import at.adiber.util.MapHelper;
+import jdk.nashorn.internal.codegen.MapCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -15,10 +16,14 @@ public class Canvas {
 
     private List<CanvasSection> sections;
     private Set<Player> watchers;
+    private BlockFace blockFace;
+    private Location location;
 
-    public Canvas() {
+    public Canvas(BlockFace blockFace, Location location) {
         sections = new ArrayList<>();
         watchers = new HashSet<>();
+        this.blockFace = blockFace;
+        this.location = location;
     }
 
     public void addWatcher(Player player) {
@@ -93,4 +98,11 @@ public class Canvas {
 
     }
 
+    public BlockFace getBlockFace() {
+        return blockFace;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
 }

@@ -8,12 +8,14 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoFrame {
+public class VideoFrame implements Comparable<VideoFrame>{
 
     public List<CanvasSection> sections;
     private static final int PIXELS_PER_FRAME = 128;
+    private int position;
 
-    public VideoFrame(BlockFace direction, Location location, BufferedImage image) {
+    public VideoFrame(BlockFace direction, Location location, BufferedImage image, int position) {
+        this.position = position;
         sections = new ArrayList<>();
         BlockFace face;
         int rotation;
@@ -97,5 +99,14 @@ public class VideoFrame {
 
     public List<CanvasSection> getSections() {
         return sections;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    @Override
+    public int compareTo(VideoFrame o) {
+        return this.getPosition().compareTo(o.getPosition());
     }
 }
