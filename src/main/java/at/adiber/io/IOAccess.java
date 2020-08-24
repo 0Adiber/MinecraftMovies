@@ -1,28 +1,51 @@
 package at.adiber.io;
 
+import at.adiber.render.RenderWorker;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorService;
 
 public class IOAccess {
 
-    public static List<BufferedImage> readImages(String folder) {
+    private static boolean stop;
 
-        List<BufferedImage> images = new ArrayList<>();
+    public static void readImages(String folder, CompletionService service, BlockFace blockFace, Location location) throws IOException{
 
-        int i = 1;
+        int position = 1;
         while(true) {
-            try {
-                images.add(ImageIO.read(new File(folder, (i++) + ".png")));
-            } catch (IOException e) {
+
+            if(stop) {
                 break;
+            }
+
+            if(Runtime.getRuntime().freeMemory() < 100_000_000) {//100 MB => 100 * 1_000_000
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                BufferedImage img = ImageIO.read(new File(folder, (position++) + ".png"));
+                service.submit(new RenderWorker(img, blockFace, location, position-1));
+            } catch (IOException e) {
+                throw new IOException("Read complete");
             }
         }
 
-        return images;
+    }
+
+    public static void kill() {
+        stop = true;
     }
 
 }
