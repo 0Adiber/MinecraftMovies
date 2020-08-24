@@ -46,7 +46,7 @@ public class RenderManager {
             service.submit(new RenderWorker(img, blockFace, location, position++));
         }
 
-        //pool.shutdown();
+        pool.shutdown();
 
         while(!pool.isTerminated()) {
             Future<VideoFrame> f = service.take();
