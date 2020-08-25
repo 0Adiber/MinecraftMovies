@@ -6,12 +6,18 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CanvasSection {
+public class CanvasSection implements Serializable {
+
+    private static final long serialVersionUID = 1337133713371337L;
 
     public static final int DEFAULT_STARTING_ID = Integer.MAX_VALUE / 4;
     private static final AtomicInteger ID_COUNTER = new AtomicInteger(DEFAULT_STARTING_ID);
@@ -20,8 +26,8 @@ public class CanvasSection {
     private final BlockFace direction;
     private final int rotation;
 
-    private Location location;
-    private int frameId, mapId;
+    private transient Location location;
+    private transient int frameId, mapId; //should not be saved
     Set<UUID> shown = new HashSet<>();
 
     CanvasSection(BlockFace direction, int rotation, Location location, BufferedImage image) {
@@ -106,6 +112,19 @@ public class CanvasSection {
         if(this.shown.remove(player.getUniqueId())) {
             MapHelper.destroyMap(player, this.frameId);
         }
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        Canvas.writeLocation(out, this.location);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.location = Canvas.readLocation(in);
+        this.frameId = ID_COUNTER.getAndIncrement();
+        this.mapId = MapHelper.nextMapId(location.getWorld());
+        this.shown = new HashSet<>();
     }
 
 }

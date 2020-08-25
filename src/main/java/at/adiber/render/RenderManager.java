@@ -3,12 +3,13 @@ package at.adiber.render;
 import at.adiber.io.IOAccess;
 import at.adiber.main.Main;
 import at.adiber.player.VideoFrame;
+import at.adiber.util.Messages;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -19,18 +20,20 @@ public class RenderManager {
     private Location location;
     private BlockFace blockFace;
     private String name;
+    private CommandSender sender;
 
     private ExecutorService pool;
 
-    public RenderManager(int threads, Location location, BlockFace blockFace, String name) {
+    public RenderManager(int threads, Location location, BlockFace blockFace, String name, CommandSender sender) {
         this.threads = threads;
         this.location = location;
         this.blockFace = blockFace;
         this.name = name;
+        this.sender = sender;
     }
 
-    public RenderManager(Location location, BlockFace blockFace, String name) {
-        this(12, location, blockFace, name);
+    public RenderManager(Location location, BlockFace blockFace, String name, CommandSender sender) {
+        this(12, location, blockFace, name, sender);
     }
 
     /**
@@ -71,13 +74,16 @@ public class RenderManager {
 
                 System.out.println("Rendered: " + f.get().getPosition());
             } catch (ExecutionException e) {
-                System.out.println("Out of memory on Threads");
+                e.printStackTrace();
             }
         }
 
         frames.sort(VideoFrame::compareTo);
-        Main.main.videos.put(name, new Video(frames));
+        Video video = new Video(frames, name);
+        Main.main.saveVideo(video);
+        Main.main.videos.put(name, video);
         System.out.println("Render complete");
+        sender.sendMessage(Messages.RENDER_COMPLETE);
     }
 
     public void terminate() throws InterruptedException {
@@ -87,7 +93,7 @@ public class RenderManager {
             if(!pool.awaitTermination(30, TimeUnit.SECONDS)) { //wait 30 secs for current tasks to finish
                 pool.shutdownNow(); //terminate tasks, if not finished in time
                 if (!pool.awaitTermination(30, TimeUnit.SECONDS)) { //wait 30 secs for terminated
-                    System.out.println("Renderer Pool did not terminate");
+                    System.out.println("Render Pool did not terminate");
                 }
             }
         }

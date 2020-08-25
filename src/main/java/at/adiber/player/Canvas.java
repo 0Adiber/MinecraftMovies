@@ -4,26 +4,33 @@ import at.adiber.util.MapHelper;
 import jdk.nashorn.internal.codegen.MapCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
-public class Canvas {
+public class Canvas implements Serializable {
 
-    private List<CanvasSection> sections;
-    private Set<Player> watchers;
+    private transient List<CanvasSection> sections; //this is dynamic, so saving it does not make sense
+    private transient Set<Player> watchers; //does not have to be saved
     private BlockFace blockFace;
-    private Location location;
+    private transient Location location;
+    private String id;
 
-    public Canvas(BlockFace blockFace, Location location) {
+    public Canvas(BlockFace blockFace, Location location, String id) {
         sections = new ArrayList<>();
         watchers = new HashSet<>();
         this.blockFace = blockFace;
         this.location = location;
+        this.id = id;
     }
 
     public void addWatcher(Player player) {
@@ -39,18 +46,6 @@ public class Canvas {
             section.show(player);
         }
 
-            /*
-            boolean sameWorld = location != null && section.getLocation().getWorld().equals(location.getWorld());
-            if(sameWorld) {
-                double distance = section.getLocation().distanceSquared(location);
-                if(distance <= 64*64) {
-                    section.show(player);
-                } else {
-                    section.hide(player);
-                }
-            } else {
-                section.hide(player);
-            }*/
     }
 
     /**
@@ -104,5 +99,38 @@ public class Canvas {
 
     public Location getLocation() {
         return location;
+    }
+
+    public String getId(){return id;}
+
+    public static void writeLocation(ObjectOutputStream out, Location location) throws IOException {
+        out.writeObject(location.getWorld().getName());
+        out.writeInt(location.getBlockX());
+        out.writeInt(location.getBlockY());
+        out.writeInt(location.getBlockZ());
+        out.writeFloat(location.getYaw());
+        out.writeFloat(location.getPitch());
+    }
+
+    public static Location readLocation(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+        String name = (String) in.readObject();
+        World world = Bukkit.getWorld(name);
+        return new Location(
+                world,
+                in.readInt(), in.readInt(), in.readInt(),
+                in.readFloat(), in.readFloat()
+        );
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        writeLocation(out, this.location);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.location = readLocation(in);
+        watchers = new HashSet<>();
     }
 }

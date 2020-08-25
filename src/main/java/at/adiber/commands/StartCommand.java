@@ -4,15 +4,12 @@ import at.adiber.main.Main;
 import at.adiber.player.Canvas;
 import at.adiber.player.VideoPlayer;
 import at.adiber.render.Video;
+import at.adiber.util.Messages;
 import at.adiber.util.Shared;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Random;
 
 public class StartCommand implements CommandExecutor {
 
@@ -20,14 +17,14 @@ public class StartCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if(args.length != 2) {
-            sender.sendMessage("Wrong arguments");
+            sender.sendMessage(String.format(Messages.WRONG_ARGS, "/start CANVAS#ID VIDEO#NAME"));
             return false;
         }
 
         if(sender instanceof Player) {
             Player player = (Player) sender;
             if(!player.hasPermission("movies.play")) {
-                player.sendMessage("You have no permissions!");
+                player.sendMessage(Messages.NO_PERM);
                 return false;
             }
         }
@@ -36,7 +33,7 @@ public class StartCommand implements CommandExecutor {
         Video video = Main.main.videos.get(args[1]);
 
         if(canvas == null || video == null) {
-            sender.sendMessage("Canvas or Video does not exist");
+            sender.sendMessage(Messages.CV_NOT_EXIST);
             return false;
         }
 
@@ -52,7 +49,7 @@ public class StartCommand implements CommandExecutor {
 
         Main.main.players.put(id, player);
 
-        sender.sendMessage("Id of the Player: " + id);
+        sender.sendMessage(String.format(Messages.ID_OF_PLAYER, id));
 
         player.start();
 

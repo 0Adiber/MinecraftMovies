@@ -3,6 +3,7 @@ package at.adiber.commands;
 import at.adiber.main.Main;
 import at.adiber.player.Canvas;
 import at.adiber.render.RenderManager;
+import at.adiber.util.Messages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,13 +17,13 @@ public class RenderCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if(args.length != 3) {
-            sender.sendMessage("Wrong arguments!");
+            sender.sendMessage(String.format(Messages.WRONG_ARGS, "/render CANVAS#ID TYPE FILE"));
             return false;
         }
 
         if(sender instanceof Player) {
             if(!((Player)sender).hasPermission("movies.render")) {
-                sender.sendMessage("You have no Permissions to use that command!");
+                sender.sendMessage(Messages.NO_PERM);
                 return false;
             }
         }
@@ -30,41 +31,39 @@ public class RenderCommand implements CommandExecutor {
         Canvas canvas = Main.main.canvases.get(args[0]);
 
         if(canvas == null) {
-            sender.sendMessage("This canvas does not exist!");
+            sender.sendMessage(String.format(Messages.C_NOT_EXIST, args[0]));
             return false;
         }
 
+        sender.sendMessage(Messages.RENDER_START);
         if(args[1].equalsIgnoreCase("folder")) {
             //Folder with images
-
-            sender.sendMessage("Starting render... (see progress in console)");
 
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     try {
-                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2])
+                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
                                 .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2], true);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        sender.sendMessage("Something went wrong (see console for more output)");
+                        sender.sendMessage(Messages.UNKNOWN);
                     }
                 }
             }.runTaskAsynchronously(Main.main);
 
         } else {
             //Video file
-            sender.sendMessage("Starting render... (see progress in console)");
 
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     try {
-                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2])
+                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
                                 .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2] + ".mp4", false);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        sender.sendMessage("Something went wrong (see console for more output)");
+                        sender.sendMessage(Messages.UNKNOWN);
                     }
                 }
             }.runTaskAsynchronously(Main.main);

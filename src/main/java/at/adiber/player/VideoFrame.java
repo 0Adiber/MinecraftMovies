@@ -5,10 +5,11 @@ import org.bukkit.block.BlockFace;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoFrame implements Comparable<VideoFrame>{
+public class VideoFrame implements Comparable<VideoFrame>, Serializable {
 
     public List<CanvasSection> sections;
     private static final int PIXELS_PER_FRAME = 128;
