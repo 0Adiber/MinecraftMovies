@@ -93,7 +93,11 @@ public class Canvas implements Serializable {
 
         for(int i = 0; i<this.sections.size(); i++) {
             this.destroy(this.sections.get(i));
-            this.refresh(sections.get(i));
+            CanvasSection section = sections.get(i);
+            section.setDirection(this.blockFace);
+            section.calcLocation(this.location);
+            section.setMapId(this.location.getWorld());
+            this.refresh(section);
         }
         this.sections = new ArrayList<>(sections);
 

@@ -46,7 +46,7 @@ public class MapHelper {
         return colors;
     }
 
-    public static void createMap(Player player, int frameId, int mapId, Location location, BlockFace direction, int rotation, byte[] pixels) {
+    public static void createMap(Player player, int frameId, int mapId, Location location, BlockFace direction, byte[] pixels) {
 
         ItemStack item = new ItemStack(Items.FILLED_MAP);
         item.getOrCreateTag().setInt("map", mapId);
@@ -56,9 +56,6 @@ public class MapHelper {
                 CraftBlock.blockFaceToNotch(direction));
         frame.setItem(item, false, false);
         setFieldValue(ENTITY_ID, frame, frameId);
-        if (rotation != 0) {
-            frame.getDataWatcher().set(ROTATION, rotation);
-        }
 
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
         connection.sendPacket(new PacketPlayOutSpawnEntity(frame, EntityTypes.ITEM_FRAME,

@@ -19,32 +19,7 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
         this.position = position;
         sections = new ArrayList<>();
         BlockFace face;
-        int rotation;
-        switch (direction) {
-            case UP:
-            case DOWN:
-                face = direction;
-                rotation = 0;
-                break;
-            case NORTH:
-                face = BlockFace.SOUTH;
-                rotation = 0;
-                break;
-            case SOUTH:
-                face = BlockFace.NORTH;
-                rotation = 0;
-                break;
-            case EAST:
-                face = BlockFace.WEST;
-                rotation = 0;
-                break;
-            case WEST:
-                face = BlockFace.EAST;
-                rotation = 0;
-                break;
-            default:
-                throw new IllegalStateException("Invalid direction " + direction);
-        }
+
 
         int xSections = Math.max(image.getWidth() / PIXELS_PER_FRAME, 1);
         int ySections = Math.max(image.getHeight() / PIXELS_PER_FRAME, 1);
@@ -53,31 +28,9 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
 
             for (int y = 0; y < ySections; y++) {
 
-                Location loc = location.clone();
-                switch (face) {
-                    case UP:
-                        loc.add(x, 0, y);
-                        break;
-                    case DOWN:
-                        loc.add(x, 0, -y);
-                        break;
-                    case SOUTH:
-                        loc.add(-x, -y, 0);
-                        break;
-                    case NORTH:
-                        loc.add(x, -y, 0);
-                        break;
-                    case WEST:
-                        loc.add(0, -y, -x);
-                        break;
-                    case EAST:
-                        loc.add(0, -y, x);
-                        break;
-                }
+                CanvasSection section = new CanvasSection(location.getWorld(), image.getSubimage(x * PIXELS_PER_FRAME, y * PIXELS_PER_FRAME,
+                        PIXELS_PER_FRAME, PIXELS_PER_FRAME), (byte)x, (byte)y);
 
-                CanvasSection section = new CanvasSection(direction,
-                        rotation, loc, image.getSubimage(x * PIXELS_PER_FRAME, y * PIXELS_PER_FRAME,
-                        PIXELS_PER_FRAME, PIXELS_PER_FRAME));
                 this.sections.add(section);
             }
         }

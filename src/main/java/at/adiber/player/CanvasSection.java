@@ -2,6 +2,7 @@ package at.adiber.player;
 
 import at.adiber.util.MapHelper;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -23,20 +24,20 @@ public class CanvasSection implements Serializable {
     private static final AtomicInteger ID_COUNTER = new AtomicInteger(DEFAULT_STARTING_ID);
 
     private final byte[] pixels;
-    private final BlockFace direction;
-    private final int rotation;
+    private transient BlockFace direction; //will be calculated
 
-    private transient Location location;
+    private transient Location location; //this will be calculated
     private transient int frameId, mapId; //should not be saved
-    Set<UUID> shown = new HashSet<>();
+    public transient Set<UUID> shown = new HashSet<>(); //should also not be saved
 
-    CanvasSection(BlockFace direction, int rotation, Location location, BufferedImage image) {
-        this.direction = direction;
-        this.rotation = rotation;
-        this.location = location;
+    private byte x,y;
+
+    CanvasSection(World world, BufferedImage image, byte x, byte y) {
         this.pixels = MapHelper.getPixels(image);
         this.frameId = ID_COUNTER.getAndIncrement();
-        this.mapId = MapHelper.nextMapId(location.getWorld());
+        this.mapId = MapHelper.nextMapId(world);
+        this.x = x;
+        this.y = y;
     }
 
     /**
@@ -53,22 +54,6 @@ public class CanvasSection implements Serializable {
      */
     public BlockFace getDirection() {
         return direction;
-    }
-
-    /**
-     * Get the amount of rotation this section is within it's own space (0-8)
-     * @return The rotation
-     */
-    public int getRotation() {
-        return rotation;
-    }
-
-    /**
-     * Get the {@link Location} of this item frame section.
-     * @return The frame location
-     */
-    public Location getLocation() {
-        return location;
     }
 
     /**
@@ -93,7 +78,7 @@ public class CanvasSection implements Serializable {
      */
     public void show(Player player) {
         if(this.shown.add(player.getUniqueId())) {
-            MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, this.rotation, this.pixels);
+            MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, this.pixels);
         }
     }
 
@@ -114,17 +99,48 @@ public class CanvasSection implements Serializable {
         }
     }
 
+    public void calcLocation(Location location) {
+
+        switch (direction) {
+            case UP:
+                this.location = location.clone().add(x,0,y);
+                break;
+            case DOWN:
+                this.location = location.clone().add(x,0,-y);
+                break;
+            case NORTH:
+                this.location = location.clone().add(-x,-y,0);
+                break;
+            case SOUTH:
+                this.location = location.clone().add(x,-y,0);
+                break;
+            case EAST:
+                this.location = location.clone().add(0,-y,-x);
+                break;
+            case WEST:
+                this.location = location.clone().add(0,-y, x);
+                break;
+        }
+
+    }
+
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        Canvas.writeLocation(out, this.location);
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        this.location = Canvas.readLocation(in);
         this.frameId = ID_COUNTER.getAndIncrement();
-        this.mapId = MapHelper.nextMapId(location.getWorld());
         this.shown = new HashSet<>();
+    }
+
+    public void setMapId(World world) {
+        this.mapId = MapHelper.nextMapId(world);
+    }
+
+    public void setDirection(BlockFace direction) {
+        this.direction = direction;
     }
 
 }
