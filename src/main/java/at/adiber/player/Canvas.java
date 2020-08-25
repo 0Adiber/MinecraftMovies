@@ -72,6 +72,9 @@ public class Canvas implements Serializable {
 
     public void destroyAll() {
 
+        if(this.sections == null)
+            return;
+
         for(CanvasSection section : this.sections) {
             for(Player player : watchers) {
                 MapHelper.destroyMap(player, section.getFrameId());
@@ -84,6 +87,9 @@ public class Canvas implements Serializable {
      * Change the image and show it
      */
     public void update(List<CanvasSection> sections) {
+
+        if(this.sections == null)
+            this.sections = new ArrayList<>(sections);
 
         for(int i = 0; i<this.sections.size(); i++) {
             this.destroy(this.sections.get(i));
