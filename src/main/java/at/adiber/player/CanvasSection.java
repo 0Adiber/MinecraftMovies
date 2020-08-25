@@ -35,7 +35,7 @@ public class CanvasSection implements Serializable {
     CanvasSection(World world, BufferedImage image, byte x, byte y) {
         this.pixels = MapHelper.getPixels(image);
         this.frameId = ID_COUNTER.getAndIncrement();
-        this.mapId = MapHelper.nextMapId(world);
+        //this.mapId = MapHelper.nextMapId(world);
         this.x = x;
         this.y = y;
     }

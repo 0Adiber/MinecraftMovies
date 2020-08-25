@@ -41,8 +41,8 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
             return image;
         }
         // Get a scaled version of the image
-        Image img = image.getScaledInstance(xSections * PIXELS_PER_FRAME,
-                ySections * PIXELS_PER_FRAME, Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance(xSections * PIXELS_PER_FRAME, ySections * PIXELS_PER_FRAME, Image.SCALE_DEFAULT);
+
         image = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         // Copy the image over to the new instance
         Graphics2D g2D = image.createGraphics();
@@ -50,6 +50,7 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
         g2D.dispose();
         return image;
     }
+
 
     public List<CanvasSection> getSections() {
         return sections;
