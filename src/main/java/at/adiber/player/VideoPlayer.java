@@ -15,7 +15,6 @@ import java.util.List;
 
 public class VideoPlayer {
 
-    //private FFmpegFrameGrabber grabber;
     private String id;
     private int currentFrame;
     private Video video;
@@ -27,7 +26,6 @@ public class VideoPlayer {
     private boolean pause;
 
     public VideoPlayer(Canvas canvas, Video video, String id) {
-        //grabber = new FFmpegFrameGrabber(file);
         this.video = video;
         this.currentFrame = 0;
         this.canvas = canvas;
@@ -86,8 +84,6 @@ public class VideoPlayer {
     }
 
     public VideoFrame next() {
-        //Java2DFrameConverter converter = new Java2DFrameConverter();
-        //return converter.convert(grabber.grab());
         return this.video.getFrames().get(currentFrame++);
     }
 

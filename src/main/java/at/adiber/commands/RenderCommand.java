@@ -44,7 +44,7 @@ public class RenderCommand implements CommandExecutor {
                 public void run() {
                     try {
                         new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2])
-                                .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2]);
+                                .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2], true);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         sender.sendMessage("Something went wrong (see console for more output)");
@@ -54,7 +54,20 @@ public class RenderCommand implements CommandExecutor {
 
         } else {
             //Video file
+            sender.sendMessage("Starting render... (see progress in console)");
 
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    try {
+                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2])
+                                .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2] + ".mp4", false);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        sender.sendMessage("Something went wrong (see console for more output)");
+                    }
+                }
+            }.runTaskAsynchronously(Main.main);
         }
 
         return true;

@@ -7,11 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -35,34 +33,36 @@ public class RenderManager {
         this(12, location, blockFace, name);
     }
 
-    public void renderFromImages(String folder) throws InterruptedException {
+    /**
+     * Renders a folder of images or a mp4
+     * @param folder The folder/file
+     * @param type true=folder;false=file
+     * @throws InterruptedException
+     */
+    public void renderFromImages(String folder, boolean type) throws InterruptedException {
 
         List<VideoFrame> frames = new ArrayList<>();
 
         pool = Executors.newFixedThreadPool(threads);
         CompletionService<VideoFrame> service = new ExecutorCompletionService<>(pool);
 
-        new Thread(){
+        new BukkitRunnable() {
             @Override
             public void run() {
                 try {
-                    IOAccess.readImages(folder, service, blockFace, location);
-                } catch (IOException e) {
+                    if (type) {
+                        int position = 1;
+                        while(new File(folder, position + ".png").exists()) {
+                            service.submit(new RenderWorker(folder, blockFace, location, position++));
+                        }
+                        pool.shutdown();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                     pool.shutdown();
                 }
             }
-        }.run();
-
-
-
-        /*List<BufferedImage> images = IOAccess.readImages(folder);
-
-        int position = 0;
-        for(BufferedImage img : images) {
-            service.submit(new RenderWorker(img, blockFace, location, position++));
-        }
-
-        pool.shutdown();*/
+        }.runTaskAsynchronously(Main.main);
 
         while(!pool.isTerminated()) {
             Future<VideoFrame> f = service.take();
@@ -71,7 +71,7 @@ public class RenderManager {
 
                 System.out.println("Rendered: " + f.get().getPosition());
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                System.out.println("Out of memory on Threads");
             }
         }
 

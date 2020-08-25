@@ -49,12 +49,6 @@
             <version>4.2.2-1.5.3</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.inventivetalent</groupId>
-            <artifactId>mapmanager</artifactId>
-            <version>1.7.8-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>

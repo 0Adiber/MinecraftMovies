@@ -40,6 +40,9 @@ public class StartCommand implements CommandExecutor {
             return false;
         }
 
+        if(sender instanceof Player)
+            canvas.addWatcher((Player)sender);
+
         String id;
         do {
             id = Shared.genID();

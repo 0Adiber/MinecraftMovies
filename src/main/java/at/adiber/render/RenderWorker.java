@@ -1,5 +1,6 @@
 package at.adiber.render;
 
+import at.adiber.io.IOAccess;
 import at.adiber.main.Main;
 import at.adiber.player.VideoFrame;
 import org.bukkit.Location;
@@ -16,13 +17,13 @@ import java.util.concurrent.Callable;
 
 public class RenderWorker implements Callable<VideoFrame> {
 
-    private BufferedImage image;
+    private String folder;
     private BlockFace direction;
     private Location location;
     private int position;
 
-    public RenderWorker(BufferedImage image, BlockFace direction, Location location, int position) {
-        this.image = image;
+    public RenderWorker(String folder, BlockFace direction, Location location, int position) {
+        this.folder = folder;
         this.direction = direction;
         this.location = location;
         this.position = position;
@@ -30,40 +31,11 @@ public class RenderWorker implements Callable<VideoFrame> {
 
 
     @Override
-    public VideoFrame call() throws Exception {
-
-        try {
-            return new VideoFrame(direction, location, image, position);
-        } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+    public VideoFrame call() throws IOException {
+        BufferedImage img = IOAccess.readImages(folder, position);
+        if(img == null) {
+            throw new IOException("Render stopped");
         }
-
-        return null;
-    }
-}
-
-final class RenderEntry<Integer, VideoFrame> implements Map.Entry<Integer, VideoFrame> {
-
-    private final Integer key;
-    private final VideoFrame value;
-
-    public RenderEntry(Integer key, VideoFrame value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    @Override
-    public Integer getKey() {
-        return key;
-    }
-
-    @Override
-    public VideoFrame getValue() {
-        return value;
-    }
-
-    @Override
-    public VideoFrame setValue(VideoFrame value) {
-        return null;
+        return new VideoFrame(direction, location, img, position);
     }
 }
