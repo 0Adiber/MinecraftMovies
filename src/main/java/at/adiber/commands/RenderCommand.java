@@ -4,6 +4,7 @@ import at.adiber.main.Main;
 import at.adiber.player.Canvas;
 import at.adiber.render.RenderManager;
 import at.adiber.util.Messages;
+import at.adiber.util.Shared;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,7 @@ public class RenderCommand implements CommandExecutor {
                 @Override
                 public void run() {
                     try {
-                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
+                        new RenderManager(Shared.Config.getRenderThreads(), canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
                                 .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2], true);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

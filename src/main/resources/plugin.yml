@@ -11,3 +11,6 @@ commands:
   render:
     description: Render a video for a canvas
     usage: /render <canvas> <type> <name>
+  verify:
+    description: Verify with the MMovie Discord bot
+    usage: /verify

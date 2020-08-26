@@ -22,6 +22,11 @@
             <id>inventive-repo</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -48,6 +53,11 @@
             <artifactId>ffmpeg-platform</artifactId>
             <version>4.2.2-1.5.3</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

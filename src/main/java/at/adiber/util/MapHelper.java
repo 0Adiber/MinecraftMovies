@@ -6,6 +6,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapPalette;
 
@@ -66,6 +67,7 @@ public class MapHelper {
     }
 
     public static void destroyMap(Player player, int frameId) {
+        ItemFrame frame = null;
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(frameId));
     }
 

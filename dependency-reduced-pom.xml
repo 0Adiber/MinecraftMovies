@@ -29,6 +29,11 @@
       <id>inventive-repo</id>
       <url>https://repo.inventivetalent.org/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>jcenter</id>
+      <name>jcenter-bintray</name>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -64,6 +69,134 @@
       <artifactId>spigot</artifactId>
       <version>1.16.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacv</artifactId>
+      <version>1.5.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>javacpp</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>openblas</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>opencv</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>flycapture</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libdc1394</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libfreenect</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libfreenect2</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>librealsense</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>librealsense2</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>videoinput</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>artoolkitplus</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>flandmark</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>leptonica</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>tesseract</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>ffmpeg-platform</artifactId>
+      <version>4.2.2-1.5.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>javacpp-platform</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <properties>

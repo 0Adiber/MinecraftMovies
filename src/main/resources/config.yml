@@ -1,0 +1,6 @@
+render:
+  threads: 12
+
+discord:
+  prefix: "m!"
+  token: "TOKEN"

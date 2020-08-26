@@ -3,11 +3,16 @@ package at.adiber.main;
 import at.adiber.commands.CreateCommand;
 import at.adiber.commands.RenderCommand;
 import at.adiber.commands.StartCommand;
+import at.adiber.commands.VerifyCommand;
+import at.adiber.config.ConfigHandler;
+import at.adiber.discord.Bot;
 import at.adiber.player.Canvas;
 import at.adiber.player.VideoPlayer;
 import at.adiber.render.RenderManager;
 import at.adiber.render.Video;
+import at.adiber.util.Shared;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -24,14 +29,25 @@ public class Main extends JavaPlugin {
 
     public List<RenderManager> renderer = new ArrayList<>();
 
+    public Bot bot;
+
     @Override
     public void onEnable() {
         main = this;
         getLogger().info("Minecraft Movies loaded.. happy watching!");
         init();
         registerCommands();
+        registerEvents();
+        loadConfig();
 
         loadAll();
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Main.main.bot = new Bot(Shared.Config.getDc().getToken());
+            }
+        }.runTaskAsynchronously(Main.main);
     }
 
     @Override
@@ -45,6 +61,8 @@ public class Main extends JavaPlugin {
             }
         }
         getLogger().info("Minecraft Movies successfully disabled");
+
+        bot = null;
     }
 
     public void init() {
@@ -60,6 +78,11 @@ public class Main extends JavaPlugin {
         getCommand("cc").setExecutor(new CreateCommand());
         getCommand("start").setExecutor(new StartCommand());
         getCommand("render").setExecutor(new RenderCommand());
+        getCommand("verify").setExecutor(new VerifyCommand());
+    }
+
+    public void registerEvents() {
+
     }
 
     public void saveVideo(Video video) {
@@ -142,6 +165,13 @@ public class Main extends JavaPlugin {
         } catch (NullPointerException e) {
             getLogger().info("[cans] nothing found");
         }
+    }
+
+    private void loadConfig() {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
+        Shared.Config = ConfigHandler.load();
     }
 
 }
