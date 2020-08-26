@@ -29,9 +29,17 @@ public class MapHelper {
             getFieldValue(EntityItemFrame.class, null, "g");
     private static final Map<UUID, AtomicInteger> MAP_IDS = new HashMap<>(4);
 
-    public static int nextMapId(org.bukkit.World world) {
-        return MAP_IDS.computeIfAbsent(world.getUID(), __ ->
+    private static final Map<Location, Integer> PREV_IDS = new HashMap<>();
+
+    public static int nextMapId(Location location) {
+        Integer id = PREV_IDS.get(location);
+        if(id != null) {
+            return id;
+        }
+        id = MAP_IDS.computeIfAbsent(location.getWorld().getUID(), __ ->
                 new AtomicInteger(DEFAULT_STARTING_ID)).getAndIncrement();
+        PREV_IDS.put(location, id);
+        return id;
     }
 
     public static byte[] getPixels(BufferedImage image) {
@@ -63,7 +71,6 @@ public class MapHelper {
                 frame.getDirection().c(), frame.getBlockPosition()));
         connection.sendPacket(new PacketPlayOutEntityMetadata(frame.getId(), frame.getDataWatcher(), true));
         connection.sendPacket(new PacketPlayOutMap(mapId, (byte) 3, false, false, emptyList(), pixels, 0, 0, 128, 128));
-
     }
 
     public static void destroyMap(Player player, int frameId) {

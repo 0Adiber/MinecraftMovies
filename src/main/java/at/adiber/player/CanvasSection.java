@@ -136,7 +136,7 @@ public class CanvasSection implements Serializable {
     }
 
     public void setMapId(World world) {
-        this.mapId = MapHelper.nextMapId(world);
+        this.mapId = MapHelper.nextMapId(location);
     }
 
     public void setDirection(BlockFace direction) {

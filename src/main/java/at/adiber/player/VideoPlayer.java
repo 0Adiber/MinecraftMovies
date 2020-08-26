@@ -54,7 +54,7 @@ public class VideoPlayer {
                     stop();
                 }
             }
-        }.runTaskTimer(Main.main, 0L, 1L);
+        }.runTaskTimerAsynchronously(Main.main, 0L, 1L);
     }
 
     public void clearShown() {
