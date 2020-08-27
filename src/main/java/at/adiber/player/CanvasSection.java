@@ -76,7 +76,7 @@ public class CanvasSection implements Serializable {
      * Show this image section to the player
      * @param player The player to show to.
      */
-    public void show(Player player) {
+    public synchronized void show(Player player) {
         if(this.shown.add(player.getUniqueId())) {
             MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, this.pixels);
         }

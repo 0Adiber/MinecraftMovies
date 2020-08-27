@@ -71,6 +71,7 @@ public class MapHelper {
                 frame.getDirection().c(), frame.getBlockPosition()));
         connection.sendPacket(new PacketPlayOutEntityMetadata(frame.getId(), frame.getDataWatcher(), true));
         connection.sendPacket(new PacketPlayOutMap(mapId, (byte) 3, false, false, emptyList(), pixels, 0, 0, 128, 128));
+
     }
 
     public static void destroyMap(Player player, int frameId) {

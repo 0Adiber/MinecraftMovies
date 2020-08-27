@@ -6,6 +6,7 @@ import at.adiber.player.VideoPlayer;
 import at.adiber.render.Video;
 import at.adiber.util.Messages;
 import at.adiber.util.Shared;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,9 @@ public class StartCommand implements CommandExecutor {
             return false;
         }
 
-        canvas.addWatcher((Player)sender);
+        for(Player all : Bukkit.getOnlinePlayers()) {
+            canvas.addWatcher(all);
+        }
 
         String id;
         do {
