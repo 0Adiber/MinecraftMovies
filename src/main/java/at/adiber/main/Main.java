@@ -6,6 +6,8 @@ import at.adiber.commands.StartCommand;
 import at.adiber.commands.VerifyCommand;
 import at.adiber.config.ConfigHandler;
 import at.adiber.discord.Bot;
+import at.adiber.events.EventPlayerJoin;
+import at.adiber.events.EventPlayerQuit;
 import at.adiber.player.Canvas;
 import at.adiber.player.VideoPlayer;
 import at.adiber.render.RenderManager;
@@ -34,7 +36,6 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         main = this;
-        getLogger().info("Minecraft Movies loaded.. happy watching!");
         init();
         registerCommands();
         registerEvents();
@@ -48,6 +49,8 @@ public class Main extends JavaPlugin {
                 Main.main.bot = new Bot(Shared.Config.getDc().getToken());
             }
         }.runTaskAsynchronously(Main.main);
+
+        getLogger().info("Minecraft Movies loaded.. happy watching!");
     }
 
     @Override
@@ -62,6 +65,7 @@ public class Main extends JavaPlugin {
         }
         getLogger().info("Minecraft Movies successfully disabled");
 
+        bot.shutdown();
         bot = null;
     }
 
@@ -82,7 +86,8 @@ public class Main extends JavaPlugin {
     }
 
     public void registerEvents() {
-
+        getServer().getPluginManager().registerEvents(new EventPlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new EventPlayerQuit(), this);
     }
 
     public void saveVideo(Video video) {

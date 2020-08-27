@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class VideoPlayer {
 
@@ -25,6 +26,8 @@ public class VideoPlayer {
 
     private boolean pause;
 
+    private boolean audioLoaded;
+
     public VideoPlayer(Canvas canvas, Video video, String id) {
         this.video = video;
         this.currentFrame = 0;
@@ -32,16 +35,22 @@ public class VideoPlayer {
         this.id = id;
     }
 
-    public void start() {
+    public void start(UUID uuid) {
 
         if(playerTask != -1) {
             return;
         }
-        currentFrame = 0;
 
+        Main.main.bot.setWatching(video.getName());
+        Main.main.bot.getGuildAudioPlayer(Main.main.bot.getApi().getGuilds().get(0))
+                .loadAndPlay(new File(Main.main.getDataFolder(), "saves" + File.separator + "audio" + File.separator + video.getName() + ".mp3").getAbsolutePath(), Main.main.bot.getUser(uuid).toString(), this);
+
+        currentFrame = 0;
+        audioLoaded = false;
         new BukkitRunnable() {
             @Override
             public void run() {
+                if(!audioLoaded) return;
                 if(currentFrame == 0)
                     playerTask = this.getTaskId();
                 if(pause)
@@ -89,5 +98,9 @@ public class VideoPlayer {
 
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    public void setAudioLoaded(boolean audioLoaded) {
+        this.audioLoaded = audioLoaded;
     }
 }

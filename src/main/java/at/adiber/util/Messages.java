@@ -19,6 +19,8 @@ public class Messages {
     public static final String C_NOT_EXIST = PREFIX + ERROR +"§cCanvas#ID §4%s §cdoes not exist";
     public static final String UNKNOWN = PREFIX + ERROR +"§cSomething went wrong (see console for more output)";
     public static final String NOT_A_PLAYER = PREFIX + ERROR +"You have to be a player!";
+    public static final String NEED_TO_VERIFY = PREFIX + ERROR + "You need to verify first!";
+    public static final String ALREADY_VERIFIED = PREFIX + ERROR + "Your account is already linked!";
 
     //INFO
     public static final String ID_OF_PLAYER = PREFIX + INFO + "§7Id of Player: §a%s";

@@ -21,12 +21,21 @@ public class StartCommand implements CommandExecutor {
             return false;
         }
 
-        if(sender instanceof Player) {
-            Player player = (Player) sender;
-            if(!player.hasPermission("movies.play")) {
-                player.sendMessage(Messages.NO_PERM);
-                return false;
-            }
+        if(!(sender instanceof Player)) {
+            sender.sendMessage(Messages.NOT_A_PLAYER);
+            return false;
+        }
+
+        Player player = (Player)sender;
+
+        if(!player.hasPermission("movies.play")) {
+            player.sendMessage(Messages.NO_PERM);
+            return false;
+        }
+
+        if(Main.main.bot.getUser(player.getUniqueId()) == null) {
+            player.sendMessage(Messages.NEED_TO_VERIFY);
+            return false;
         }
 
         Canvas canvas = Main.main.canvases.get(args[0]);
@@ -37,21 +46,20 @@ public class StartCommand implements CommandExecutor {
             return false;
         }
 
-        if(sender instanceof Player)
-            canvas.addWatcher((Player)sender);
+        canvas.addWatcher((Player)sender);
 
         String id;
         do {
             id = Shared.genID();
         } while(Main.main.players.get(id) != null);
 
-        VideoPlayer player = new VideoPlayer(canvas, video, id);
+        VideoPlayer videoPlayer = new VideoPlayer(canvas, video, id);
 
-        Main.main.players.put(id, player);
+        Main.main.players.put(id, videoPlayer);
 
         sender.sendMessage(String.format(Messages.ID_OF_PLAYER, id));
 
-        player.start();
+        videoPlayer.start(player.getUniqueId());
 
         return true;
     }

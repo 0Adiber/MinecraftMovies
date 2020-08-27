@@ -54,9 +54,6 @@ public class Canvas implements Serializable {
      */
     public void remove(Player player) {
         watchers.remove(player);
-        for(CanvasSection section : sections) {
-            section.shown.remove(player.getUniqueId());
-        }
     }
 
     /**
