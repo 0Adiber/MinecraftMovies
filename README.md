@@ -1,6 +1,6 @@
 # Minecraft Movies
 
-This is a Spigot Plugin, which lets you watch videos in vanilla Minecraft. This is done using Item Frames and some quick Maths. (actually the maths is kinda not quick). **Note, that this is not usable for real life application, but rather as a proof of concept.**
+This is a Spigot Plugin, which lets you watch videos in vanilla Minecraft. This is done using Item Frames and some quick Maths. (actually the maths is kinda not quick). **Note, that this is not usable for real life application, but rather as a proof of concept.** It is also important to note, that this should not encourage anyone to watch or distribute pirated movies using Minecraft. 
 
 ## How it works
 
