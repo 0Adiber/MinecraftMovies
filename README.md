@@ -70,7 +70,7 @@ To render a video there are a few more steps needed.
 6. Cut and Paste the `FOLDER.mp3` into `plugins/MinecraftMovies/saves/audio` (create folder if not exists)
 7. Now we can actually render the Video in MC by typing `/render CID folder FOLDER` => the progress can be seen in the Server Console
 
-![Render](/images/render.png)
+![Render](/images/rendr.png)
 
 Note that this process will take some time depending on the length of the video and make sure you have enough RAM allocated to the server. 
 
@@ -80,7 +80,7 @@ After the Render has finished you will get a notification in the console and in 
 
 1. Use the `/verify` command in Minecraft to get a code `CODE`
 
-   ![VerifyCmd](/images/verifycmd.png)
+   ![VerifyCmd](/images/verify.png)
 
 2. Go to Discord, open the direct message for the Bot and type `m!verify CODE`
 
@@ -90,7 +90,7 @@ After the Render has finished you will get a notification in the console and in 
 
 Finally we can play the Video. Before you do that, make sure you are in a Discord Channel on which the Bot is (if you don't, the video won't start). Now we simply execute `/start CID FOLDER`. And we hear the Bot joining the Channel and a Wall of Frames displaying in Minecraft. 
 
-![video](/images/video.png)
+![video](/images/vid.png)
 
 And there you have the Marvel Intro from [Captain America: The Winter Soldier](https://www.youtube.com/watch?v=LIBg2oUYcAQ). And it looks surprisingly good. (And the audio in discord is also clean)
 
