@@ -42,9 +42,10 @@ public class VideoPlayer {
         }
 
         Main.main.bot.setWatching(video.getName());
-        
+
         Main.main.bot.getGuildAudioPlayer(Main.main.bot.getApi().getGuilds().get(0))
                 .loadAndPlay(new File(Main.main.getDataFolder(), "saves" + File.separator + "audio" + File.separator + video.getName() + ".mp3").getAbsolutePath(), Main.main.bot.getUser(uuid).toString(), this);
+
 
         currentFrame = 0;
         audioLoaded = false;
@@ -84,6 +85,7 @@ public class VideoPlayer {
         }
 
         Main.main.players.remove(this.id);
+        Main.main.bot.getGuildAudioPlayer(Main.main.bot.getApi().getGuilds().get(0)).disconnect();
     }
 
     public void pause() {

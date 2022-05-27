@@ -25,8 +25,6 @@ public class MapHelper {
 
     static final int DEFAULT_STARTING_ID = 8000;
     private static final Field ENTITY_ID = findField(Entity.class, "id");
-    private static final DataWatcherObject<Integer> ROTATION =
-            getFieldValue(EntityItemFrame.class, null, "g");
     private static final Map<UUID, AtomicInteger> MAP_IDS = new HashMap<>(4);
 
     private static final Map<Location, Integer> PREV_IDS = new HashMap<>();

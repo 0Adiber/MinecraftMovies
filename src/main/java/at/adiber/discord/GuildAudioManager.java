@@ -9,10 +9,12 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import jdk.nashorn.internal.runtime.ECMAException;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -81,26 +83,36 @@ public class GuildAudioManager {
 
     private void play(AudioTrack track, String userId, VideoPlayer player) {
         this.currentVideoPlayer = player;
-        connectToVoiceChannelOfUser(guild.getAudioManager(), userId);
+        try {
+            connectToVoiceChannelOfUser(guild.getAudioManager(), userId);
+        }catch (Exception e) {
+            //TODO send sth to console and stuff
+        }
 
         getPlayer().playTrack(track);
         //Main.main.bot.audioManager.currentVideoPlayer.setAudioLoaded(true);
-
     }
 
-    private static void connectToVoiceChannelOfUser(AudioManager audioManager, String userId) {
+    public void disconnect() {
+        guild.getAudioManager().closeAudioConnection();
+    }
+
+    private static void connectToVoiceChannelOfUser(AudioManager audioManager, String userId) throws Exception {
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
 
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 for(Member mem : voiceChannel.getMembers()) {
                     if(mem.getUser().getId().equals(userId)) {
                         audioManager.openAudioConnection(voiceChannel);
-                        break;
+                        return;
                     }
                 }
             }
 
+            throw new Exception("User not found");
+
         }
+        throw new Exception("Audioplayer already connected");
     }
 
     public Guild getGuild() {

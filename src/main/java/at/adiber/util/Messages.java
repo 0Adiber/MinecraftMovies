@@ -7,10 +7,10 @@ public class Messages {
     /*
      *****MINECRAFT*****
      */
-    public static final String PREFIX = "§5MMovies§8=";
-    public static final String INFO = "§8[§9INFO§8] ";
-    public static final String ERROR = "§8[§4ERROR§8]";
-    public static final String SECURE = "§8[§eSECURE§8]";
+    public static final String PREFIX = "§c§lMMovies §7";
+    public static final String INFO = "§8[§9INFO§8]§7";
+    public static final String ERROR = "§8[§4ERROR§8]§7";
+    public static final String SECURE = "§8[§eSECURE§8]§7";
 
     //ERRORS
     public static final String NO_PERM = PREFIX + ERROR + "§cYou have no permissions!";

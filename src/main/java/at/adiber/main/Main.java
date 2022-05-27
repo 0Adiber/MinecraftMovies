@@ -10,7 +10,7 @@ import at.adiber.events.EventPlayerJoin;
 import at.adiber.events.EventPlayerQuit;
 import at.adiber.player.Canvas;
 import at.adiber.player.VideoPlayer;
-import at.adiber.render.RenderManager;
+import at.adiber.render.RenderProducer;
 import at.adiber.render.Video;
 import at.adiber.util.Shared;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,7 +29,7 @@ public class Main extends JavaPlugin {
     public HashMap<String, Canvas> canvases = new HashMap<>();
     public HashMap<String, VideoPlayer> players = new HashMap<>();
 
-    public List<RenderManager> renderer = new ArrayList<>();
+    public List<RenderProducer> renderer = new ArrayList<>();
 
     public Bot bot;
 
@@ -55,15 +55,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(RenderManager man : renderer) {
-            getLogger().info("Terminating RenderManager...");
-            try {
-                man.terminate();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        for(RenderProducer p : renderer) {
+            getLogger().info("Terminating Renders...");
+            p.stop();
         }
-        getLogger().info("Minecraft Movies successfully disabled");
 
         bot.shutdown();
         bot = null;

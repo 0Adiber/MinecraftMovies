@@ -2,16 +2,22 @@ package at.adiber.commands;
 
 import at.adiber.main.Main;
 import at.adiber.player.Canvas;
-import at.adiber.render.RenderManager;
+import at.adiber.player.VideoFrame;
+import at.adiber.render.RenderConsumer;
+import at.adiber.render.RenderProducer;
 import at.adiber.util.Messages;
 import at.adiber.util.Shared;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RenderCommand implements CommandExecutor {
     @Override
@@ -40,34 +46,18 @@ public class RenderCommand implements CommandExecutor {
         if(args[1].equalsIgnoreCase("folder")) {
             //Folder with images
 
-            new BukkitRunnable(){
-                @Override
-                public void run() {
-                    try {
-                        new RenderManager(Shared.Config.getRenderThreads(), canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
-                                .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2], true);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        sender.sendMessage(Messages.UNKNOWN);
-                    }
-                }
-            }.runTaskAsynchronously(Main.main);
+            ExecutorService pool = Executors.newFixedThreadPool(Shared.Config.getRenderThreads());
+            CompletionService<VideoFrame> service = new ExecutorCompletionService<>(pool);
 
-        } else {
-            //Video file
+            RenderProducer prod = new RenderProducer(canvas.getLocation(), canvas.getBlockFace(), service, Paths.get(Main.main.getDataFolder().getAbsolutePath(), "movies", args[2]), pool);
+            RenderConsumer con = new RenderConsumer(service, sender, args[2], pool);
 
-            new BukkitRunnable(){
-                @Override
-                public void run() {
-                    try {
-                        new RenderManager(canvas.getLocation(), canvas.getBlockFace(), args[2], sender)
-                                .renderFromImages(Main.main.getDataFolder().getAbsolutePath() + File.separator + "movies" + File.separator + args[2] + ".mp4", false);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        sender.sendMessage(Messages.UNKNOWN);
-                    }
-                }
-            }.runTaskAsynchronously(Main.main);
+            Thread pThread = new Thread(prod);
+            Thread cThread = new Thread(con);
+
+            pThread.start();
+            cThread.start();
+
         }
 
         return true;
