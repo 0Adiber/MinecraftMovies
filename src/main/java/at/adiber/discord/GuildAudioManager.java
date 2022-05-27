@@ -98,7 +98,7 @@ public class GuildAudioManager {
     }
 
     private static void connectToVoiceChannelOfUser(AudioManager audioManager, String userId) throws Exception {
-        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+        if (!audioManager.isConnected()) {
 
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 for(Member mem : voiceChannel.getMembers()) {

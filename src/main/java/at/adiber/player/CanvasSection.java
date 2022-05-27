@@ -32,7 +32,7 @@ public class CanvasSection implements Serializable {
 
     private byte x,y;
 
-    CanvasSection(World world, BufferedImage image, byte x, byte y) {
+    CanvasSection(BufferedImage image, byte x, byte y) {
         this.pixels = MapHelper.getPixels(image);
         this.frameId = ID_COUNTER.getAndIncrement();
         //this.mapId = MapHelper.nextMapId(world);
@@ -77,8 +77,10 @@ public class CanvasSection implements Serializable {
      * @param player The player to show to.
      */
     public synchronized void show(Player player) {
+        byte[] uncompressed = MapHelper.uncompress(this.pixels);
+        System.out.println(uncompressed.length);
         if(this.shown.add(player.getUniqueId())) {
-            MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, this.pixels);
+            MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, uncompressed);
         }
     }
 

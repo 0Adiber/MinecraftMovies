@@ -15,7 +15,7 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
     private static final int PIXELS_PER_FRAME = 128;
     private int position;
 
-    public VideoFrame(BlockFace direction, Location location, BufferedImage image, int position) {
+    public VideoFrame(BufferedImage image, int position) {
         this.position = position;
         sections = new ArrayList<>();
         BlockFace face;
@@ -23,12 +23,12 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
 
         int xSections = Math.max(image.getWidth() / PIXELS_PER_FRAME, 1);
         int ySections = Math.max(image.getHeight() / PIXELS_PER_FRAME, 1);
-        image = resize(image, xSections, ySections);
+        //image = resize(image, xSections, ySections);
         for (int x = 0; x < xSections; x++) {
 
             for (int y = 0; y < ySections; y++) {
 
-                CanvasSection section = new CanvasSection(location.getWorld(), image.getSubimage(x * PIXELS_PER_FRAME, y * PIXELS_PER_FRAME,
+                CanvasSection section = new CanvasSection(image.getSubimage(x * PIXELS_PER_FRAME, y * PIXELS_PER_FRAME,
                         PIXELS_PER_FRAME, PIXELS_PER_FRAME), (byte)x, (byte)y);
 
                 this.sections.add(section);

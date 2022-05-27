@@ -18,15 +18,11 @@ public class RenderProducer implements Runnable{
 
     private volatile boolean runFlag;
 
-    private Location location;
-    private BlockFace blockFace;
     private CompletionService<VideoFrame> service;
     private Path folder;
     private ExecutorService pool;
 
-    public RenderProducer(Location location, BlockFace blockFace, CompletionService<VideoFrame> service, Path folder, ExecutorService pool) {
-        this.location = location;
-        this.blockFace = blockFace;
+    public RenderProducer(CompletionService<VideoFrame> service, Path folder, ExecutorService pool) {
         this.service = service;
         this.folder = folder;
         this.pool = pool;
@@ -50,7 +46,7 @@ public class RenderProducer implements Runnable{
             try {
                 int pos = position.getAndIncrement();
                 BufferedImage img = ImageIO.read(new File(folder.toString(), pos + ".png"));
-                service.submit(new RenderWorker(img, this.blockFace, this.location, pos));
+                service.submit(new RenderWorker(img, pos));
             } catch (IOException e) {
                 Bukkit.getLogger().info("Read complete");
                 stop();

@@ -1,6 +1,7 @@
 package at.adiber.util;
 
 import net.minecraft.server.v1_16_R2.*;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
@@ -10,12 +11,10 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapPalette;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static at.adiber.reflect.Reflection.*;
@@ -50,7 +49,33 @@ public class MapHelper {
             colors[i] = MapPalette.matchColor(new Color(pixels[i], true));
         }
 
-        return colors;
+        List<Byte> finals = new ArrayList<>();
+
+        byte len = 0;
+        for(int i = 0; i < colors.length-1; i++) {
+            if(colors[i] == colors[i+1] && len < 127) {
+                len++;
+                continue;
+            }
+            finals.add(len);
+            finals.add(colors[i]);
+            len = 0;
+        }
+        finals.add(len);
+        finals.add(colors[127]);
+
+        return ArrayUtils.toPrimitive(finals.toArray(new Byte[0]));
+    }
+
+    public static byte[] uncompress(byte[] compressed) {
+        List<Byte> pixels = new ArrayList<>();
+        for(int i = 0; i<compressed.length; i+=2) {
+            for(int n = 0; n<=compressed[i]; n++) {
+                pixels.add(compressed[i+1]);
+            }
+        }
+
+        return ArrayUtils.toPrimitive(pixels.toArray(new Byte[0]));
     }
 
     public static void createMap(Player player, int frameId, int mapId, Location location, BlockFace direction, byte[] pixels) {

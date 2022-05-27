@@ -23,8 +23,8 @@ public class RenderCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if(args.length != 3) {
-            sender.sendMessage(String.format(Messages.WRONG_ARGS, "/render CANVAS#ID TYPE FILE"));
+        if(args.length != 2) {
+            sender.sendMessage(String.format(Messages.WRONG_ARGS, "/render TYPE FILE"));
             return false;
         }
 
@@ -35,22 +35,16 @@ public class RenderCommand implements CommandExecutor {
             }
         }
 
-        Canvas canvas = Main.main.canvases.get(args[0]);
-
-        if(canvas == null) {
-            sender.sendMessage(String.format(Messages.C_NOT_EXIST, args[0]));
-            return false;
-        }
-
         sender.sendMessage(Messages.RENDER_START);
-        if(args[1].equalsIgnoreCase("folder")) {
+        if(args[0].equalsIgnoreCase("folder")) {
             //Folder with images
 
             ExecutorService pool = Executors.newFixedThreadPool(Shared.Config.getRenderThreads());
             CompletionService<VideoFrame> service = new ExecutorCompletionService<>(pool);
 
-            RenderProducer prod = new RenderProducer(canvas.getLocation(), canvas.getBlockFace(), service, Paths.get(Main.main.getDataFolder().getAbsolutePath(), "movies", args[2]), pool);
-            RenderConsumer con = new RenderConsumer(service, sender, args[2], pool);
+            RenderProducer prod = new RenderProducer(service, Paths.get(Main.main.getDataFolder().getAbsolutePath(), "movies", args[1]), pool);
+            RenderConsumer con = new RenderConsumer(service, sender, args[1], pool);
+            Main.main.renderer.add(prod);
 
             Thread pThread = new Thread(prod);
             Thread cThread = new Thread(con);
