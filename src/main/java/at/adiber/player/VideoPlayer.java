@@ -41,14 +41,14 @@ public class VideoPlayer {
             return;
         }
 
+        currentFrame = 0;
+        audioLoaded = false;
+
         Main.main.bot.setWatching(video.getName());
 
         Main.main.bot.getGuildAudioPlayer(Main.main.bot.getApi().getGuilds().get(0))
                 .loadAndPlay(new File(Main.main.getDataFolder(), "saves" + File.separator + "audio" + File.separator + video.getName() + ".mp3").getAbsolutePath(), Main.main.bot.getUser(uuid).toString(), this);
 
-
-        currentFrame = 0;
-        audioLoaded = false;
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -64,6 +64,7 @@ public class VideoPlayer {
                     clearShown();
                     stop();
                 }
+
             }
         }.runTaskTimerAsynchronously(Main.main, 0L, 1L);
 

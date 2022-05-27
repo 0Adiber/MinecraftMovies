@@ -93,7 +93,7 @@ public class CanvasSection implements Serializable {
      * Hide this image section from the player
      * @param player The player to hide from
      */
-    public void hide(Player player) {
+    public synchronized void hide(Player player) {
         if(this.shown.remove(player.getUniqueId())) {
             MapHelper.destroyMap(player, this.frameId);
         }
