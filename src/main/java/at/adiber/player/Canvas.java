@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.List;
 
 public class Canvas implements Serializable {
+    private static final long serialVersionUID = 3034204589419632042L;
 
     private transient List<CanvasSection> sections; //this is dynamic, so saving it does not make sense
     private transient Set<Player> watchers; //does not have to be saved

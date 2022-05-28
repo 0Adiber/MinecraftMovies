@@ -1,5 +1,6 @@
 package at.adiber.player;
 
+import at.adiber.util.MapHelper;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 
@@ -7,9 +8,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class VideoFrame implements Comparable<VideoFrame>, Serializable {
+    private static final long serialVersionUID = 1337133713371337L;
 
     public List<CanvasSection> sections;
     private static final int PIXELS_PER_FRAME = 128;
@@ -17,13 +20,12 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
 
     public VideoFrame(BufferedImage image, int position) {
         this.position = position;
-        sections = new ArrayList<>();
-        BlockFace face;
-
+        this.sections = new ArrayList<>();
 
         int xSections = Math.max(image.getWidth() / PIXELS_PER_FRAME, 1);
         int ySections = Math.max(image.getHeight() / PIXELS_PER_FRAME, 1);
-        //image = resize(image, xSections, ySections);
+        image = resize(image, xSections, ySections);
+
         for (int x = 0; x < xSections; x++) {
 
             for (int y = 0; y < ySections; y++) {
@@ -34,6 +36,7 @@ public class VideoFrame implements Comparable<VideoFrame>, Serializable {
                 this.sections.add(section);
             }
         }
+
     }
 
     public static BufferedImage resize(BufferedImage image, int xSections, int ySections) {

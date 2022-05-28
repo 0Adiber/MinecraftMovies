@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Video implements Serializable {
+    private static final long serialVersionUID = 1337133713371337L;
+
     private List<VideoFrame> frames;
     private String name;
 

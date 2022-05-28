@@ -49,6 +49,10 @@ public class MapHelper {
             colors[i] = MapPalette.matchColor(new Color(pixels[i], true));
         }
 
+        return compress(colors);
+    }
+
+    public static byte[] compress(byte[] colors) {
         List<Byte> finals = new ArrayList<>();
 
         byte len = 0;
@@ -98,7 +102,6 @@ public class MapHelper {
     }
 
     public static void destroyMap(Player player, int frameId) {
-        ItemFrame frame = null;
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(frameId));
     }
 
