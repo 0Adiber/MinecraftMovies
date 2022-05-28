@@ -78,7 +78,6 @@ public class CanvasSection implements Serializable {
      */
     public synchronized void show(Player player) {
         byte[] uncompressed = MapHelper.uncompress(this.pixels);
-        System.out.println(uncompressed.length);
         if(this.shown.add(player.getUniqueId())) {
             MapHelper.createMap(player, this.frameId, this.mapId, this.location, this.direction, uncompressed);
         }
